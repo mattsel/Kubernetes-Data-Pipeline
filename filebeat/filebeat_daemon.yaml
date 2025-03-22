@@ -1,0 +1,35 @@
+piVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: filebeat
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: filebeat
+  template:
+    metadata:
+      labels:
+        app: filebeat
+    spec:
+      containers:
+        - name: filebeat
+          image: docker.elastic.co/beats/filebeat:7.9.3 
+          securityContext:
+            runAsUser: 0
+          volumeMounts:
+            - name: filebeat-config
+              mountPath: /etc/filebeat/filebeat.yml
+              subPath: filebeat.yml
+            - name: logs
+              mountPath: /mnt/data/logs
+      volumes:
+        - name: filebeat-config
+          configMap:
+            name: filebeat-config
+        - name: logs
+          hostPath:
+            path: /mnt/data/logs
+            type: DirectoryOrCreate
+      terminationGracePeriodSeconds: 30
+
