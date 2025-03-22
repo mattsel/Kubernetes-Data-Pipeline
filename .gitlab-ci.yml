@@ -1,0 +1,18 @@
+stages:
+  - build
+  - deploy
+
+# Build the Docker image
+build:
+  stage: build
+  script:
+    - echo "Building the Docker image"
+    - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+    - docker build -t $DOCKER_USERNAME/$DOCKER_IMAGE:$CI_COMMIT_REF_NAME .
+    - docker push $DOCKER_USERNAME/$DOCKER_IMAGE:$CI_COMMIT_REF_NAME
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+      changes:
+        - filebeat/filebeat_config_generator.py
+
+

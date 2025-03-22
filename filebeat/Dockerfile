@@ -1,8 +1,13 @@
-FROM python:3.9
+FROM continuumio/miniconda3:latest
 
 WORKDIR /app
 
-COPY generate_filebeat_config.py /app/generate_filebeat_config.py
+COPY environment.yml .
+COPY . .
 
-CMD ["python", "generate_filebeat_config.py"]
+RUN conda env create -f environment.yml
+
+ENV PATH /opt/conda/envs/myenv/bin:$PATH
+
+CMD ["python", "filebeat_config_generator.py"]
 
