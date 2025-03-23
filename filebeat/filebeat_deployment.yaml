@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: filebeat-config-watcher
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: filebeat-config-watcher
+  template:
+    metadata:
+      labels:
+        app: filebeat-config-watcher
+    spec:
+      containers:
+        - name: filebeat-config-watcher
+          image: mattsel/filebeat-config-watcher:latest
+          imagePullPolicy: Always
+          env:
+            - name: KUBERNETES_SERVICE_HOST
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: KUBERNETES_SERVICE_PORT
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.ports[0].port
+          volumeMounts:
+            - name: kube-config
+              mountPath: /root/.kube
+              readOnly: true
+      volumes:
+        - name: kube-config
+          configMap:
+            name: kube-config
