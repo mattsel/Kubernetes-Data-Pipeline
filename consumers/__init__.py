@@ -17,15 +17,15 @@ if __name__ == '__main__':
         required=False
     )
     parser.add_argument(
-        '--threads',
+        '--topic',
         type=int,
-        help='Amount of threads to process topics',
+        help='Name of the topic to parse',
         required=False
     )
 
     args = parser.parse_args()
    
-    batch = args.batch if args.batch is not None else 5000
-    threads = args.thread if args.thread is not None else 15
+    batch = args.batch if args.batch is not None else 1000
+    topic = args.topic if args.topic is not None else "service-logs"
     
-    main(args.brokers, batch, threads)
+    main(args.brokers, batch, topics)

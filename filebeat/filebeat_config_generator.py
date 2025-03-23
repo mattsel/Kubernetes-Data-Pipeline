@@ -35,7 +35,6 @@ filebeat_config = {
         'bulk_max_size': 2048,
         'compression': 'gzip',
         'max_message_size': 1000000,
-        'partition': 1,
         'key': '%{[fields.service]}',
     }
 }
@@ -48,7 +47,7 @@ for service in services.items:
             'type': 'log',
             'paths': [f'/mnt/data/logs/{service_name}/*.log'],
             'fields': {'service': service_name},
-            'ignore_older': '6h'
+            'ignore_older': '6h',
             'close_inactive': '5m',
             'multiline': {
                 'pattern': '^\d{4}-\d{2}-\d{2}',
