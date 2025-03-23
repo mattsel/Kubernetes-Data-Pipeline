@@ -1,5 +1,4 @@
 from typing import Dict
-from datetime import datetime
 import json
 from elasticsearch import Elasticsearch
 from env import logger
@@ -23,6 +22,7 @@ class Elk:
         except Exception as e:
             logger.error(f"Error connecting to ELK: {e}")
 
+    # Converts message to dictionary, ensuring it is a valid JSON
     def to_dict(self, message: Dict[str, str]) -> Dict[str, str]:
         try:
             data = json.loads(message)
@@ -42,6 +42,7 @@ class Elk:
             logger.error("Error decoding message")
             return None
     
+    # Posts message to ELK
     def post_to_elk(self, index: str, document: dict):
         try:
             response = self.client.index(index=index, document=document)

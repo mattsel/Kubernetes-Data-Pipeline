@@ -1,13 +1,15 @@
 from typing import List
 from kafka import KafkaAdminClient
 from env import logger
+
 class KafkaClient:
     def __init__(self, brokers: List[str], topic: str):
         self.brokers = brokers
         self.client = KafkaAdminClient(bootstrap_servers=self.brokers)
         self.topic_name = topic
 
-    def get_topic_partitions(self) -> List[str]:
+    # Ensures topic exists and returns its partitions
+    def get_topic_partitions(self) -> List[int]:
         try:
             topics = self.get_topics()
             if topic_name in topics:
@@ -19,7 +21,8 @@ class KafkaClient:
             logger.error(f"Error getting topic partitions: {e}")
         finally:
             return []
-
+    
+    # Returns all topics in the cluster
     def get_topics(self) -> List[str]:
         try:
             return self.client.get_topics()
@@ -27,6 +30,7 @@ class KafkaClient:
             logger.error(f"Error getting topics: {e}")
             return []
 
+    # Gracefully closes the client
     def close(self) -> None:
         self.client.close()
 

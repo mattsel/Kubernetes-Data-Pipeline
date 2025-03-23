@@ -8,6 +8,7 @@ class Consumer:
         self.brokers = brokers
         self.partition = partition
 
+    # Generates consumer client to consume messages from a partition
     def get_consumer_client(self) -> KafkaConsumer:
         try:
             consumer = KafkaConsumer(
@@ -24,6 +25,7 @@ class Consumer:
             logger.error(f"Error creating consumer: {e}")
             return None
     
+    # Gracefully closes the consumer client
     def close(self) -> None:
         self.consumer_client.close()
 
