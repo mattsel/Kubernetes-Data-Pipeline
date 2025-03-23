@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: filebeat-config-watcher-service
+spec:
+  selector:
+    app: filebeat-config-watcher
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
