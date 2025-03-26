@@ -1,3 +1,4 @@
+import os
 from typing import Dict
 import json
 from elasticsearch import Elasticsearch
@@ -10,7 +11,7 @@ class Elk:
         user = os.getenv('ELK_USER')
         password = os.getenv('ELK_PASS')
         try:
-            if elk_user and elk_pass:
+            if user and password:
                 logger.info("ELK credentials provided")
                 self.client = Elasticsearch(
                     [f'http://{host}:{port}'],
