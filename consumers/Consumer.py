@@ -1,31 +1,36 @@
 from typing import List
 from env import logger
+from kafka import KafkaConsumer, TopicPartition
 
 class Consumer:
-    def __init__(self, topic: str, brokers: List[str], partition: int):
-        self.consumer_client = None
+    def __init__(self, topic: str, brokers: List[str], batch: int) -> None:
         self.topic = topic
         self.brokers = brokers
-        self.partition = partition
+        self.batch = batch
+        self.client = KafkaConsumer(
+            bootstrap_servers=self.brokers,
+            auto_offset_reset='earliest',
+            enable_auto_commit=False,
+            group_id='console-consumer-64406',
+        )
 
     # Generates consumer client to consume messages from a partition
-    def get_consumer_client(self) -> KafkaConsumer:
+    def assign_topic_partition(self, partition: int) -> KafkaConsumer:
         try:
-            consumer = KafkaConsumer(
-                self.topic,
-                bootstrap_servers=self.brokers,
-                auto_offset_reset='earliest',
-                enable_auto_commit=False,
-                group_id=None
-            )
-            consumer.assign([TopicPartition(self.topic, self.partition)])
-            self.consumer_client = consumer
-            return self.consumer_client
+            self.client.assign([TopicPartition(self.topic, partition)])
+            return self.client
         except Exception as e:
             logger.error(f"Error creating consumer: {e}")
             return None
     
+    def get_topic_partitions(self) -> List[int]:
+        try:
+            return self.client.partitions_for_topic(self.topic)
+        except Exception as e:
+            logger.error(f"Error getting topic partitions: {e}")
+            return None
+
     # Gracefully closes the consumer client
     def close(self) -> None:
-        self.consumer_client.close()
+        self.client.close()
 

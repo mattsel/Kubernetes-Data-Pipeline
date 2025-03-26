@@ -18,7 +18,7 @@ if __name__ == '__main__':
     )
     parser.add_argument(
         '--topic',
-        type=int,
+        type=str,
         help='Name of the topic to parse',
         required=False
     )
@@ -28,4 +28,4 @@ if __name__ == '__main__':
     batch = args.batch if args.batch is not None else 1000
     topic = args.topic if args.topic is not None else "service-logs"
     
-    main(args.brokers, batch, topics)
+    main(args.brokers, batch, topic)
