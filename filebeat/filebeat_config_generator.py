@@ -8,7 +8,7 @@ logger.setLevel(logging.INFO)
 
 # Load Kubernetes configuration
 try:
-    config.load_kube_config()
+    config.load_incluster_config()
     logger.info("Kubernetes configuration loaded successfully.")
 except Exception as e:
     logger.error(f"Error loading Kubernetes configuration: {e}")
@@ -21,7 +21,7 @@ v1 = client.CoreV1Api()
 filebeat_config = {
     'filebeat.inputs': [],
     'output.kafka': {
-        'hosts': ['broker1:9092', 'broker2:9092', 'broker3:9092'],
+        'hosts': ['localhost:9092'],
         'topic': 'service-logs',
         'codec.json': {'pretty': True},
         'bulk_max_size': 2048,
@@ -57,18 +57,6 @@ def remove_service_from_filebeat_config(service_name):
 #Updates ConfigMap with new filebeat configuration
 def update_configmap():
     try:
-        filebeat_configmap = {
-            'apiVersion': 'v1',
-            'kind': 'ConfigMap',
-            'metadata': {
-                'name': 'filebeat-config',
-                'namespace': namespace
-            },
-            'data': {
-                'filebeat.yml': yaml.dump(filebeat_config)
-            }
-        }
-        
         k8s_client = client.ApiClient()
         v1 = client.CoreV1Api(k8s_client)
         existing_configmap = v1.read_namespaced_config_map('filebeat-config', namespace)

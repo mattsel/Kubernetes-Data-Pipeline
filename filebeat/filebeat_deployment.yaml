@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: filebeat-config-watcher
-          image: mattsel/filebeat-config-watcher:latest
+          image: mattsel/filebeat-config-watcher:3.0
           imagePullPolicy: Always
           env:
             - name: KUBERNETES_SERVICE_HOST
