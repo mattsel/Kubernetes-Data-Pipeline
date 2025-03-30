@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: filebeat-config
+  namespace: default
+data:
+  filebeat.yml: |
+    # Base filebeat config
+    filebeat.inputs: []
+    output.kafka:
+      hosts: ["localhost:9092"]
+      topic: "service-logs"
+      codec.json: {pretty: true}
+      bulk_max_size: 2048
+      compression: "gzip"
+      max_message_size: 1000000
+      key: "%{[fields.service]}"
