@@ -28,8 +28,7 @@ spec:
           configMap:
             name: filebeat-config
         - name: logs
-          hostPath:
-            path: /mnt/data/logs
-            type: DirectoryOrCreate
+          persistentVolumeClaim:
+            claimName: logs-pvc
       terminationGracePeriodSeconds: 30
 
